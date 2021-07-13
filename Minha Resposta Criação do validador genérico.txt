@@ -1,0 +1,41 @@
+🤖 A classe VerificaCampoDuplicadoValidator irá implementar uma query que irá buscar o valor no bando de dados para que seja comparado ao email de entada retornado a presença ou não do email pesquisado no banco de dados. Uma vez a notação criada a mesma será implementada na classe AutorRequest @VerificaCampoDuplicado(attribute = "email", clazz = Autor.class). A mesma lógica pode ser utilizada no cadastro de categoria.🤖
+
+Exemplo de aplicação: AutorRequest e CategoriaRequest:
+	Ex.:   
+	@VerificaCampoDuplicado(attribute = "nome",clazz = Categoria.class)
+	private String nome;
+	
+	      OU
+	@NotBlank @Email
+	@VerificaCampoDuplicado(attribute = "email", clazz = Autor.class)
+	private String email;   
+	
+VerificaCampoDuplicadoValidator
+public class VerificaCampoDuplicadoValidator
+        implements ConstraintValidator<VerificaCampoDuplicado,Object> {
+
+    private String campo;
+    private Class<?> clazz;
+
+    @PersistenceContext
+    private EntityManager manager;
+
+    @Override
+    public void initialize(VerificaCampoDuplicado parameters) {
+
+        this.campo = parameters.attribute();
+        this.clazz = parameters.clazz();
+    }
+
+    @Override
+    public boolean isValid(Object objetoValidacao, ConstraintValidatorContext context) {
+
+        Query query = manager.createQuery("SELECT 1 FROM "+ clazz.getName() + " where " + campo + " =:valor");
+        query.setParameter("valor", objetoValidacao);
+
+        var resultList = query.getResultList();
+
+        return resultList.size() > 0 ? false: true;
+
+    }
+}

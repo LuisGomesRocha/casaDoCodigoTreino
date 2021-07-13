@@ -1,0 +1,41 @@
+Funcionalidade: Criação do validador genérico
+
+
+
+Cenário:
+
+Descreva os passos que você planeja executar para a implementação da funcionalidade. É muito importante que você descreva aqui antes da implementação em si.
+
+
+
+
+O que seria bom ver nessa resposta?
+
+
+
+Peso 3: Criação de uma annotation customizada para a validação genérica de unicidade
+Peso 1: Criação dos parâmetros necessários na annotation customizada para conseguir ter acesso às informações no validador.
+Peso 3: Criação da classe que faz a validação de fato, implementando a interface da Bean Validation
+Peso 1: Utilização do EntityManager injetado no validador
+Peso 1: Utilização da annotation no DTO para bloquear a entrada do dado
+
+
+
+
+O que penaliza sua resposta?
+
+
+Penalidade - 4: Existência de Service no projeto. Não é necessária dada a especificação. Não tem nada lá que sugira a necessidade da flexibilidade que essa indireção traria.
+Penalidade - 4: Existência de classes específicas de conversão entre os dados que vieram da requisição e o objetos de domínio, comumente conhecida como Converter. Não é necessária porque pode ser feito direto no método do controller ou através de um método na classe que representa o DTO.
+Penalidade - 4: Existência de biblioteca de conversão tipo ModelMapper, MapStruct. Não é necessário porque entendemos que a configuração necessária e o entendimento extra necessário não compensam os possíveis benefícios.
+Penalidade - 4: Existência de biblioteca de geração de código compilado estilo Lombok. Não é necessário porque entendemos que o benefício trazido pelo código gerado não compensa o esforço de entendimento necessário que existe por trás de tal geração.
+
+
+
+Resposta do Especialista:
+
+Crio uma annotation chamada como ExistsId com dois parâmetros. O da classe que precisa ser verificada e o nome do atributo que precisa ser analisada. Lá ainda precisa colocar os outros parâmetros obrigatórios pela bean validation.
+Crio o validador implementando a interface da Bean Validation
+Recebo injetado o EntityManager e faço a query verificando a existência de um objeto com as informações passadas no banco de dados
+Utilizo a annotation no DTO
+
