@@ -1,0 +1,101 @@
+https://github.com/LuisGomesRocha/casaDoCodigoTreino
+
+Para cadastrar um novo autor no sistema será criado a classe Autor, anotado com @Entity que informar que uma classe também é uma entidade, a partir disso, a JPA estabelecerá a ligação entre a entidade e uma tabela de mesmo nome no banco de dados, onde os dados de objetos desse tipo poderão ser persistidos. Os dados existentes nessa classe será Id, nome, email, createdAt. 
+Afim de atender as restrições será utilizado as anotações @Column(nullable = false), sendo esta anotação implementa uma restrição não nula à coluna do banco de dados onde o  banco de dados verifica a restrição quando você insere ou atualiza um registro. Com a notação @Column(nullable = false, length = 400) adiciona obrigatoriedade do campo bem como tamanho máximo de 400 caracteres.
+A classe com @Repository é apenas uma wrapper para @Component, que diz ao Spring Boot que essa classe deve estar disponível para ser injetada, funciona como anotação tipificadora. Mas o mais importante desta interface é estender JpaRepository, nela devemos informar qual é a entidade quer será persistida e qual o tipo do id da entidade. Talvez você nem precise declarar nenhum método, pois só que fazer isso, o repository já ganhou implementação de vários métodos.
+
+
+    Autor Domain
+
+```
+@Entity
+public class Autor {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
+    private String nome;
+
+    @Column(nullable = false)//, unique = true)
+    private String email;
+
+    @Column(nullable = false, length = 400)
+    private String descricao;
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt = LocalDateTime.now();
+```
+
+    Autor Controller
+
+```
+@RestController
+@RequestMapping("/autores")
+public class AutorController {
+
+    private AutorRepository repository;
+
+    public AutorController(AutorRepository repository) {
+        this.repository = repository;
+    }
+
+    @PostMapping
+    public void salvarAutor(@RequestBody @Valid AutorRequest autorRequest) {
+
+        repository.save(autorRequest.toAutor());
+
+    }
+
+}
+```
+
+    Autor Repository
+
+```
+package br.com.zup.CasaDoCodigo.Autor;
+
+import org.springframework.data.repository.CrudRepository;
+
+public interface AutorRepository extends JPARepository<Autor, Long> {
+
+}
+```
+
+    Autor Request
+
+```
+public class AutorRequest {
+
+
+    @NotBlank
+
+    private String nome;
+    @NotBlank @Email
+    @Column (unique = true) 
+    private String email;
+    @NotBlank @Size(max = 400)
+    private String descricao;
+
+    public AutorRequest(@NotBlank String nome,
+                        @NotBlank @Email String email,
+                        @NotBlank @Size(max = 400) String descricao) {
+        this.nome = nome;
+        this.setEmail(email);
+        this.descricao = descricao;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email.toLowerCase(Locale.ROOT);
+    }
+
+    public Autor toAutor(){
+        return new Autor(this.nome, this.email, this.descricao);
+    }
+}
+}
+```
