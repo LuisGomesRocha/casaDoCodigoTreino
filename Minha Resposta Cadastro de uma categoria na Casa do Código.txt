@@ -1,0 +1,48 @@
+🤖 Para cadastrar uma nova categoria no sistema será criada a classe Categoria, anotada com @entity que informar que uma classe também é uma entidade, a partir disso, a JPA estabelecerá a ligação entre a entidade e uma tabela de mesmo nome no banco de dados, onde os dados de objetos desse tipo poderão ser persistidos. Os dados existentes nessa classe será Id e nome. Afim de atender as restrições será utilizado as anotações @column(unique = true), sendo esta anotação usada para garantir um valor único criado em seu banco de dados, não permitindo valores repetidos em sua coluna. 🤖
+
+🤖 Para atender os casos em que alguma restrição não seja atendida, personalizando o JSON (informando os problemas de validação), será criado duas classes denominadas CategoriaOuAutorNaoEncontrado e ErrosHandle, onde na primeira será estendido os métodos da classe RuntimeException capturando a mensagem de erro, e no segundo momento nos casos de MethodArgumentNotValidException o status de retorno será “BAD REQUEST” com uma mensagem personalizada dizendo: "Categoria ID ou Autor ID", "Id(s) não encontrado!" 🤖
+
+CategoriaOuAutorNaoEncontrado
+public class CategoriaOuAutorNaoEncontrado extends RuntimeException{
+    public CategoriaOuAutorNaoEncontrado(String message) {
+        super(message);
+    }
+}
+ErrosHandle
+public class ErrosHandle {
+
+    private MessageSource messageSource;
+
+
+    public ErrosHandle(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public List<ErrosResponseDto> autorValidationError(MethodArgumentNotValidException ex){
+
+        List<ErrosResponseDto> erros = new ArrayList<>();
+
+        List<FieldError> errorList = ex.getBindingResult().getFieldErrors();
+
+        errorList.forEach(e->{
+                    String message = messageSource.getMessage(e,LocaleContextHolder.getLocale());
+                    erros.add(new ErrosResponseDto(e.getField(),message));
+                });
+
+        return erros;
+
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CategoriaOuAutorNaoEncontrado.class)
+    public ErrosResponseDto CategoriaOuAutorNaoEncontrado(CategoriaOuAutorNaoEncontrado ex){
+
+        ErrosResponseDto erro;
+        erro = new ErrosResponseDto("Categoria ID ou Autor ID", "Id(s) não encontrado!");
+        return erro;
+
+    }
+
+}

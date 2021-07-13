@@ -1,0 +1,49 @@
+Funcionalidade: Cadastro de uma categoria na Casa do Código
+
+
+
+Cenário:
+
+Descreva os passos que você planeja executar para a implementação da funcionalidade. É muito importante que você descreva aqui antes da implementação em si.
+
+
+
+
+O que seria bom ver nessa resposta?
+
+
+
+Peso 2: Criação do método para receber a requisição de uma nova Categoria anotado com a configuração para receber um POST, configurado para validar entrada de dados e também para receber os dados como JSON.
+Peso 2: Utilização de uma classe específica para receber os dados da nova Categoria. O famoso DTO.
+Peso 1: Utilização das annotations de validação da Bean Validation na classe do DTO
+Peso 1: Criação da classe que representa a Categoria com as informações
+Peso 1: Utilização das annotations de validação da Bean Validation na classe do Categoria
+Peso 1: Utilização do construtor na classe Categoria para deixar claro os dados que são obrigatórios
+Peso 1: Utilização do EntityManager ou Repository específico para a inserção da Categoria
+Peso 1: Criação da tabela no banco de dados com as colunas necessárias
+
+
+
+
+O que penaliza sua resposta?
+
+
+Penalidade - 2: Criação de setters e getters na classe Categoria. Não é necessário dada a especificação.
+Penalidade - 3: Criação de uma classe, comumente conhecida como Service para realizar a inserção da Categoria. Não é necessária dada a especificação. Não tem nada lá que sugira a necessidade da flexibilidade que essa indireção traria.
+Penalidade - 3: Criação de uma classe específica de conversão entre os dados que vieram da requisição e o objeto do tipo Categoria, comumente conhecida como Converter. Não é necessária porque pode ser feito direto no método do controller ou através de um método na classe que representa o DTO.
+Penalidade - 3: Utilização de biblioteca de conversão tipo ModelMapper, MapStruct. Não é necessário porque entendemos que a configuração necessária e o entendimento extra necessário não compensam os possíveis benefícios.
+Penalidade - 3: Utilização de biblioteca de geração de código compilado estilo Lombok. Não é necessário porque entendemos que o benefício trazido pelo código gerado não compensa o esforço de entendimento necessário que existe por trás de tal geração.
+
+
+
+Resposta do Especialista:
+
+Crio um controller com um método para receber o post com os dados da nova categoria.
+O argumento do método do controller é do tipo de uma classe no estilo DTO para receber os dados da nova categoria. Ali também eu uso a anotação @Valid e @RequestBody para indicar a necessidade de validação e que o dado vem no corpo da requisição.
+Na classe que tem os dados de entrada, utilizo as annotations da Bean Validation para sinalizar as validações necessárias
+Dentro do método do controller eu converto os dados do DTO para a criação de um objeto do tipo Categoria. Faço através de um método adicionado no DTO que retorna uma Categoria em função dos valores dos atributos do DTO.
+Crio a classe Categoria com os atributos devidamente anotados com a Bean Validation.
+Também faço o mapeamento na classe Categoria para que o Hibernate consiga persistir os objetos
+Recebo injetado o EntityManager no controller e gravo a categoria no banco de dados.
+Deixo o Hibernate criar a tabela para mim no banco de dados. Poderia ter criado também o scritpt e executado contra o banco
+
