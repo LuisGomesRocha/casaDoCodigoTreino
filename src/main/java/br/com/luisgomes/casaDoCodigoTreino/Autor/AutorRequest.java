@@ -2,11 +2,10 @@ package br.com.luisgomes.casaDoCodigoTreino.Autor;
 
 import java.util.Locale;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import br.com.luisgomes.casaDoCodigoTreino.Validador.VerificaCampoDuplicado;
 
 
 
@@ -16,7 +15,7 @@ public class AutorRequest {
 	private String nome;
 	@NotBlank
 	@Email
-	@VerificaCampoDuplicado(attribute = "email", clazz = Autor.class)
+	@Column(nullable = false, unique = true)
 	private String email;
 	@NotBlank
 	@Size(max = 400)
