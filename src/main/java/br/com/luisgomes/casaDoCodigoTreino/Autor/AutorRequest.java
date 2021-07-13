@@ -6,6 +6,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import br.com.luisgomes.casaDoCodigoTreino.Validador.VerificaCampoDuplicado;
+
+
 
 public class AutorRequest {
 
@@ -13,6 +16,7 @@ public class AutorRequest {
 	private String nome;
 	@NotBlank
 	@Email
+	@VerificaCampoDuplicado(attribute = "email", clazz = Autor.class)
 	private String email;
 	@NotBlank
 	@Size(max = 400)
