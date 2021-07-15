@@ -1,0 +1,54 @@
+Funcionalidade: Cadastro de um novo livro
+
+
+
+Cenário:
+
+Descreva os passos que você planeja executar para a implementação da funcionalidade. É muito importante que você descreva aqui antes da implementação em si.
+
+
+
+
+O que seria bom ver nessa resposta?
+
+
+
+Peso 0.5: Criação do método para receber a requisição de um novo Livro anotado com a configuração para receber um POST, configurado para validar entrada de dados e também para receber os dados como JSON.
+Peso 2: Utilização de uma classe específica para receber os dados do novo Livro. O famoso DTO.
+Peso 1: Deve-se usar os ids para referenciar o Autor e a Categoria no DTO
+Peso 1: Declaração dos outros atributos na classe
+Peso 1: Método de conversão dos dados do novo Livro para um Livro de fato dentro na própria classe DTO ou criação de uma classe de conversão de Dados de novo livro para o Livro de fato.
+O método de conversão precisa ter acesso ao EntityManager/Repositories. Caso seja uma classe específica de conversão, ela precisa ter um atributo do tipo EntityManager ou os Repositories adequados.
+Peso 0.5: Utilização das annotations de validação da Bean Validation na classe do DTO
+Peso 1: Criação da classe que representa o Livro com as informações
+Peso 0.8: Precisa ter a referência aos atributos do tipo Livro e Autor.
+Peso 0.2: Outros atributos
+Peso 0.5: Utilização das annotations de validação da Bean Validation na classe do Livro
+Peso 1: Utilização do construtor na classe Livro para deixar claro os dados que são obrigatórios
+Peso 0.8: Precisa receber parâmetros do tipo Livro e Autor no construtor aqui.
+Peso 1.5: Utilização da annotation @ManyToOne para mapear o relacionamento com Autor e Categoria.
+Peso 1: Utilização do EntityManager ou Repository específico para a inserção do Autor
+Peso 1: Criação da tabela no banco de dados com as colunas necessárias
+
+
+
+
+O que penaliza sua resposta?
+
+
+Penalidade - 5: Existência de Service no projeto. Não é necessária dada a especificação. Não tem nada lá que sugira a necessidade da flexibilidade que essa indireção traria.
+Penalidade - 5: Existência de biblioteca de geração de código compilado estilo Lombok. Não é necessário porque entendemos que o benefício trazido pelo código gerado não compensa o esforço de entendimento necessário que existe por trás de tal geração.
+
+
+
+Resposta do Especialista:
+
+Crio um controller com um método para receber o post com os dados do novo livro.
+O argumento do método do controller é do tipo de uma classe no estilo DTO para receber os dados do novo livro. Ali também eu uso a anotação @Valid e @RequestBody para indicar a necessidade de validação e que o dado vem no corpo da requisição.
+Na classe que tem os dados de entrada, utilizo as annotations da Bean Validation para sinalizar as validações necessárias
+Ainda na classe que representa os dados de um novo livro, eu utilizo atributos do tipo Integer/Long para representar os ids do livro e do autor. Uso os ids simplesmente porque é o identificador necessário para que possamos buscar os objetos relativos através do nosso ORM.
+Dentro do método do controller eu converto os dados do DTO para a criação de um objeto do tipo Livro. Faço isso através de um método adicionado no DTO que retorna um Livro em função dos valores dos atributos do DTO. Aqui tem um detalhe especial. Para eu conseguir construir um objeto do tipo Livro eu preciso de um objeto do tipo Autor e outro do tipo Categoria. Preciso sair do id do autor para um Autor de fato, assim como preciso sair do id da Categoria para a Categoria de fato. Para fazer isso eu peço um EntityManager no método de conversão, para conseguir acessar o método findById. Se quisesse usar o princípio da segregação pela interface, eu poderia receber como argumento no método de conversão do DTO uma parâmetro do tipo Function e usar um method reference para passar a referência para o método find do EntityManager.
+Crio a classe Livro com os atributos devidamente anotados com a Bean Validation. Um detalhe é que no construtor eu vou receber uma referência para um objeto do tipo Autor e outro do tipo Categoria, além dos demais.
+Também faço o mapeamento na classe Livro para que o Hibernate consiga persistir os objetos. Importante aqui a utilização @ManyToOne em cima do atributo do tipo Autor e tipo Categoria.
+Recebo injetado o EntityManager no controller e gravo a categoria no banco de dados.
+Deixo o Hibernate criar a tabela para mim no banco de dados. Poderia ter criado também o scritpt e executado contra o banco
