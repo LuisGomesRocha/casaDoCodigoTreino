@@ -1,0 +1,35 @@
+Funcionalidade: Para que seja fácil pegar um id do livro, vamos exibir a lista de livros cadastrados.
+
+
+
+Cenário:
+
+Descreva os passos que você planeja executar para a implementação da funcionalidade. É muito importante que você descreva aqui antes da implementação em si.
+
+
+
+
+O que seria bom ver nessa resposta?
+
+
+
+Peso 6: Criação de uma classe específica para representar a saída necessária para a funcionalidade e utilização dela no retorno do método que está mapeado para o endpoint.
+Peso 4: Utilização do método get para o endpoint.
+
+
+
+
+O que penaliza sua resposta?
+
+
+Penalidade - 5: Existência de Service no projeto. Não é necessária dada a especificação. Não tem nada lá que sugira a necessidade da flexibilidade que essa indireção traria.
+Penalidade - 5: Existência de biblioteca de geração de código compilado estilo Lombok. Não é necessário porque entendemos que o benefício trazido pelo código gerado não compensa o esforço de entendimento necessário que existe por trás de tal geração.
+Penalidade - 5: Existência de biblioteca de conversão de objetos tipo MapStruct e afins.
+
+
+
+Resposta do Especialista:
+
+No Controller que tem o método que cadastra um livro, eu crio um método que pode retornar essa lista de ids e nomes dos livros.
+Este método vai ser anotado com @GetMapping e vai retornar uma lista de objetos do tipo ItemListaLivro. Uso o get porque o endpoint vai ser acessado para leitura e pode ser acessado múltiplas vezes sem nenhum efeito colateral para o sistema. E crio a classe ItemListaLivro para deixar bem separada as informações que são retornadas na borda mais externa dos objetos de domínio em si. Não quero alterar a classe Livro e, sem querer, gerar efeito colateral no contrato do endpoint.
+
